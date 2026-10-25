@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Weekly Timetable | Teacher Schedule Management System{% endblock %}
+{% block content %}
+<div class="title-panel">
+  <div class="title-icon">▦</div><div class="title-copy"><h1>Weekly Timetable</h1><p>Talabutab Norte National High School (TNNHS)</p><small>School Year 2025–2026</small><div class="timetable-status"><span class="status-pill {{ 'complete' if is_approved else 'incomplete' }}">{{ 'Complete · Admin Approved' if is_approved else 'Incomplete / Draft' }}</span><span>{{ entry_count }} saved class entries</span></div></div>
+  <form method="get" class="filters">
+    <label>Level<select name="level" id="levelSelect">
+      {% for lev in section_groups.keys() %}<option value="{{ lev }}" {{ 'selected' if lev == level else '' }}>{{ lev }}</option>{% endfor %}
+    </select></label>
+    <label>Program<select name="program" id="programSelect">
+      {% for prog in section_groups.get(level, {}).keys() %}<option value="{{ prog }}" {{ 'selected' if prog == program else '' }}>{{ prog }}</option>{% endfor %}
+    </select></label>
+    <label>Section<select name="section">
+      {% for sec in section_groups.get(level, {}).get(program, []) %}<option value="{{ sec }}" {{ 'selected' if sec == section else '' }}>{{ sec }}</option>{% endfor %}
+    </select></label>
+    <button class="btn primary" type="submit">View</button>
+  </form>
+  <div class="timetable-actions">{% if is_approved %}<button class="btn primary" type="button" onclick="window.print()">▧ Print approved timetable</button>{% else %}<span class="muted">Printable official design becomes available after admin approval.</span>{% endif %}</div>
+</div>
+
+<div class="timetable-container">
+  <table class="timetable">
+    <thead><tr><th class="time-heading">◷ &nbsp; Time</th>{% for day in days %}<th>▦ &nbsp; {{ day }}</th>{% endfor %}</tr></thead>
+    <tbody>
+    {% for slot in display_slots %}
+      {% if level == "Senior High School" and slot == "10:30–11:00" %}
+      <tr class="recess-row"><td class="time-cell">{{ slot }}</td><td colspan="5">☕ &nbsp; Recess</td></tr>
+      {% elif level == "Senior High School" and slot == "12:00–1:00" %}
+      <tr class="lunch-row"><td class="time-cell">{{ slot }}</td><td colspan="5">🍴 &nbsp; Lunch</td></tr>
+      {% elif level != "Senior High School" and slot == "9:30–10:00" %}
+      <tr class="recess-row"><td class="time-cell">{{ slot }}</td><td colspan="5">☕ &nbsp; Morning Recess</td></tr>
+      {% elif level != "Senior High School" and slot == "12:00–1:00" %}
+      <tr class="lunch-row"><td class="time-cell">{{ slot }}</td><td colspan="5">🍴 &nbsp; Lunch Break</td></tr>
+      {% elif level != "Senior High School" and slot == "3:00–3:15" %}
+      <tr class="afternoon-row"><td class="time-cell">{{ slot }}</td><td colspan="5">☕ &nbsp; Afternoon Recess</td></tr>
+      {% else %}
+      <tr><td class="time-cell">{{ slot }}</td>
+        {% for day in days %}
+          {% set item = grid.get((day, slot)) %}
+          <td>{% if item %}{% if session.get('role') == 'admin' %}<a class="subject-card subject-{{ item.subject|lower|replace(' ', '-')|replace('á','a') }} cover-link" title="Click to find available cover teachers" href="{{ url_for('cover_teachers', day=day, slot=slot, level=level, absent=item.teacher) }}">{% else %}<div class="subject-card subject-{{ item.subject|lower|replace(' ', '-')|replace('á','a') }}">{% endif %}<strong>{{ item.subject }}</strong><span>{{ item.teacher }}{% if item.teacher|lower in leave_names %} <b class="sick-alert" title="Teacher has an active sick leave/wellness break">!</b>{% endif %}</span><small>{{ item.section }}</small>{% if session.get('role') == 'admin' %}<small>Click to find cover teacher</small>{% endif %}{% if session.get('role') == 'admin' %}</a>{% else %}</div>{% endif %}{% else %}<div class="empty-cell">Available</div>{% endif %}</td>
+        {% endfor %}
+      </tr>
+      {% endif %}
+    {% endfor %}
+    </tbody>
+  </table>
+  <div class="legend">
+    {% for sub in subject_names %}<span><i class="dot dot-{{ sub|lower|replace(' ', '-') }}"></i>{{ sub }}</span>{% endfor %}
+    <small>ⓘ {{ 'Official approved timetable.' if is_approved else 'Draft view: saved entries are shown for checking; not yet approved.' }}</small>
+  </div>
+</div>
+{% endblock %}
