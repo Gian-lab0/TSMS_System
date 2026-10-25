@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: tsms-school-schedule
+    runtime: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7
+      - key: TSMS_SECRET_KEY
+        generateValue: true
+      - key: TSMS_DB_PATH
+        value: /var/data/teacher_schedule_management.db
+      - key: ADMIN_EMAIL
+        sync: false
+    disk:
+      name: tsms-data
+      mountPath: /var/data
+      sizeGB: 1
