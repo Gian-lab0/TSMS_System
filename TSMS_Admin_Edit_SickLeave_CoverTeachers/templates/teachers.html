@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block title %}Teacher Schedules | TSMS{% endblock %}{% block content %}
+<div class="section-heading"><div><h1>Teacher Schedules</h1><p>Click the assigned-period count to see the teacher's sections, days, and times.</p></div></div>
+<div class="table-wrap"><table class="data-table"><thead><tr><th>Teacher</th><th>Assigned Periods</th></tr></thead><tbody>{% for row in rows %}<tr><td>{{ row.teacher }}</td><td><a class="pill" href="{{ url_for('teacher_periods', teacher=row.teacher) }}">{{ row.periods }}</a></td></tr>{% else %}<tr><td colspan="2" class="empty-state">No approved teacher schedules yet.</td></tr>{% endfor %}</tbody></table></div>{% endblock %}

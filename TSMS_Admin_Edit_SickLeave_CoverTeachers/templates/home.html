@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Home | Teacher Schedule Management System{% endblock %}
+{% block content %}
+<div class="welcome-panel">
+  <div><span class="eyebrow">TNNHS · SCHOOL SCHEDULING</span><h1>Your school schedule, organized.</h1><p>View saved timetables, check whether each section is complete, and print official schedules after admin approval.</p><a class="btn primary" href="{{ url_for('timetable') }}">▦ View Timetable</a></div>
+  <div class="calendar-art">▦</div>
+</div>
+<div class="stats-grid">
+  <div class="stat-card"><span>Saved class periods</span><strong>{{ total }}</strong><small>Across all sections</small></div>
+  <div class="stat-card"><span>Teachers scheduled</span><strong>{{ teacher_count }}</strong><small>Unique teacher names</small></div>
+  <div class="stat-card"><span>Sections with schedules</span><strong>{{ section_count }}</strong><small>Across JHS and SHS</small></div>
+</div>
+{% if session.get('role') == 'admin' %}<div class="stats-grid"><div class="stat-card"><span>Pending schedules</span><strong>{{ pending }}</strong><a href="{{ url_for('admin') }}">Review approvals</a></div><div class="stat-card"><span>Pending leave requests</span><strong>{{ leave_pending }}</strong><a href="{{ url_for('admin') }}">Review requests</a></div></div>{% endif %}
+<div class="quick-grid">
+  <a class="quick-card" href="{{ url_for('manage') }}"><span>＋</span><b>Manage Schedule</b><small>Add or remove class periods</small></a>
+  <a class="quick-card status-card" href="{{ url_for('timetable') }}"><span>✓</span><b>Timetable Status</b><small>See saved entries and whether a section is approved</small></a>
+  <a class="quick-card" href="{{ url_for('available') }}"><span>◷</span><b>Teacher Availability</b><small>Check who is free at a time</small></a>
+  <a class="quick-card" href="{{ url_for('teachers') }}"><span>♟</span><b>Teacher Schedules</b><small>Review assigned periods</small></a>
+</div>
+{% endblock %}

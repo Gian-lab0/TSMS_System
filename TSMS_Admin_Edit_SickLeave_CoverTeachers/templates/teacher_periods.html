@@ -1,0 +1,3 @@
+{% extends "base.html" %}{% block title %}{{ teacher }} | Teacher Periods{% endblock %}{% block content %}
+<div class="section-heading"><div><h1>{{ teacher }}</h1><p>Approved class assignments</p></div><a class="btn primary" href="{{ url_for('teachers') }}">Back</a></div>
+<div class="table-wrap"><table class="data-table"><thead><tr><th>Level</th><th>Program</th><th>Section</th><th>Day</th><th>Time</th><th>Subject</th></tr></thead><tbody>{% for r in rows %}<tr><td>{{ r.level }}</td><td>{{ r.program }}</td><td>{{ r.section }}</td><td>{{ r.day }}</td><td>{{ r.slot }}</td><td>{{ r.subject }}</td></tr>{% else %}<tr><td colspan="6">No approved periods.</td></tr>{% endfor %}</tbody></table></div>{% endblock %}

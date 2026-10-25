@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Teacher Schedule Management System{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+{% if session.get('user_email') %}
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="brand" href="{{ url_for('home') }}"><span class="brand-icon">▦</span><span><b>Teacher Schedule Management System</b><small>School Schedule Management System</small></span></a>
+    <nav>
+      <a href="{{ url_for('home') }}" class="{{ 'active' if request.endpoint == 'home' else '' }}">⌂ <span>Home</span></a>
+      <a href="{{ url_for('timetable') }}" class="{{ 'active' if request.endpoint == 'timetable' else '' }}">▦ <span>Timetable</span></a>
+      <a href="{{ url_for('teachers') }}" class="{{ 'active' if request.endpoint == 'teachers' else '' }}">♟ <span>Teacher Schedules</span></a>
+      <a href="{{ url_for('available') }}" class="{{ 'active' if request.endpoint == 'available' else '' }}">◷ <span>Teacher Availability</span></a>
+      <a href="{{ url_for('manage') }}" class="{{ 'active' if request.endpoint == 'manage' else '' }}">⚙ <span>Manage Schedule</span></a>
+      <a href="{{ url_for('leave_request') }}" class="{{ 'active' if request.endpoint == 'leave_request' else '' }}">✚ <span>Sick Leave / Wellness</span></a>
+      {% if session.get('role') == 'admin' %}<a href="{{ url_for('admin') }}" class="{{ 'active' if request.endpoint in ['admin','admin_reset_password','leave_status'] else '' }}">♜ <span>Admin Dashboard</span></a>{% endif %}
+    </nav>
+    <a class="logout" href="{{ url_for('logout') }}">⇥ <span>Log Out</span></a>
+  </aside>
+  <main class="main-area">
+    <header class="topbar"><div><strong>Welcome, {{ session.get("user_email", "User") }}!</strong><p>Role: {{ session.get("role", "teacher")|capitalize }} · School schedule dashboard</p></div><div class="profile">● <span>Teacher</span></div></header>
+    <section class="page-content">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}<div class="flash-list">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </section>
+  </main>
+</div>
+{% else %}
+<main class="auth-shell">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}<div class="flash-list">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+  {% endwith %}
+  {% block authcontent %}{% endblock %}
+</main>
+{% endif %}
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

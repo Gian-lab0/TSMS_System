@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ mode|capitalize }} | Teacher Schedule Management System{% endblock %}
+{% block authcontent %}
+<div class="auth-card">
+  <div class="auth-brand"><span class="brand-icon">▦</span><h1>Teacher Schedule Management System</h1><p>School Schedule Management System</p></div>
+  {% if mode == 'login' %}
+    <h2>Welcome back</h2><p class="muted">Log in to view and manage schedules.</p>
+    <form method="post" class="stack-form">
+      <label>Gmail address<input type="email" name="email" placeholder="you@gmail.com" required></label>
+      <label>Password<input type="password" name="password" placeholder="Enter password" required></label>
+      <button class="btn primary full" type="submit">Log In</button>
+    </form>
+    <div class="auth-links"><a href="{{ url_for('forgot_password') }}">Forgot password?</a><span>New here? <a href="{{ url_for('signup') }}">Create account</a></span></div>
+  {% elif mode == 'signup' %}
+    <h2>Create your account</h2><p class="muted">Use a valid Gmail address.</p>
+    <form method="post" class="stack-form">
+      <label>Gmail address<input type="email" name="email" placeholder="you@gmail.com" required></label>
+      <label>Password<input type="password" name="password" minlength="6" placeholder="At least 6 characters" required></label>
+      <button class="btn primary full" type="submit">Sign Up</button>
+    </form>
+    <p class="auth-bottom">Already registered? <a href="{{ url_for('login') }}">Log in</a></p>
+  {% else %}
+    <h2>Reset password</h2><p class="muted">Local demonstration reset. This page does not send email.</p>
+    <form method="post" class="stack-form">
+      <label>Registered Gmail<input type="email" name="email" placeholder="you@gmail.com" required></label>
+      <label>New password<input type="password" name="new_password" minlength="6" required></label>
+      <button class="btn primary full" type="submit">Update Password</button>
+    </form>
+    <p class="auth-bottom"><a href="{{ url_for('login') }}">Back to login</a></p>
+  {% endif %}
+</div>
+{% endblock %}
